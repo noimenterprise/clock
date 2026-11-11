@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Noim Enterprise - Luxury Watch</title>
+  <!-- Google Fonts: Cinzel & Montserrat -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* Reset & Base Setup */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    :root {
+      --clock-size: min(84vw, 380px);
+      --gold-primary: #dcb362;
+      --gold-light: #fbe6af;
+      --gold-dark: #8c6722;
+      --red-hand: #ff3326;
+      --dial-bg: radial-gradient(circle at 50% 50%, #1a222e 0%, #111620 65%, #080b0f 100%);
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at center, #171920 0%, #0d0f14 60%, #050608 100%);
+      font-family: 'Montserrat', sans-serif;
+      overflow-x: hidden;
+      padding: 20px 16px;
+      color: #eaeef4;
+    }
+
+    .showcase {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    /* Outer Case / Brushed Heavy Gold Bezel */
+    .watch-case {
+      width: var(--clock-size);
+      height: var(--clock-size);
+      border-radius: 50%;
+      position: relative;
+      padding: clamp(12px, 3.2vw, 18px);
+      background: conic-gradient(
+        from 45deg,
+        #fce9b1 0deg,
+        #c89f46 45deg,
+        #7a5518 90deg,
+        #e3be6d 135deg,
+        #fff1c5 180deg,
+        #b28631 225deg,
+        #65440f 270deg,
+        #edd088 315deg,
+        #fce9b1 360deg
+      );
+      box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.85),
+        0 10px 20px rgba(0, 0, 0, 0.6),
+        inset 0 2px 3px rgba(255, 255, 255, 0.7),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.9),
+        0 0 0 1px rgba(255, 225, 140, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.25s ease-out;
+    }
+
+    /* Inner Bezel Ring */
+    .inner-bezel {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      padding: 5px;
+      background: linear-gradient(135deg, #5c4114, #261904 40%, #876223 80%, #3a2608 100%);
+      box-shadow: 
+        inset 0 3px 6px rgba(0, 0, 0, 0.95),
+        0 1px 1px rgba(255, 240, 180, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Main Dial Face */
+    .dial {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: var(--dial-bg);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 
+        inset 0 12px 28px rgba(0, 0, 0, 0.95),
+        inset 0 0 12px rgba(0, 0, 0, 0.9),
+        inset 0 0 0 1px rgba(212, 175, 98, 0.15);
+    }
+
+    /* Curved Sapphire Crystal Glare */
+    .dial::before {
+      content: '';
+      position: absolute;
+      top: -30%;
+      left: -30%;
+      width: 160%;
+      height: 160%;
+      border-radius: 50%;
+      background: radial-gradient(
+        ellipse at 32% 24%,
+        rgba(255, 255, 255, 0.11) 0%,
+        rgba(255, 255, 255, 0.02) 32%,
+        rgba(255, 255, 255, 0) 65%
+      );
+      pointer-events: none;
+      z-index: 15;
+    }
+
+    /* Dial Minute & Second Graduation Ticks */
+    .ticks-layer {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .tick {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: 1.5px;
+      height: 100%;
+      transform-origin: 50% 50%;
+    }
+
+    .tick::before {
+      content: '';
+      position: absolute;
+      top: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1px;
+      height: 6px;
+      background: linear-gradient(180deg, #eed898 0%, #aa8233 100%);
+      border-radius: 1px;
+      opacity: 0.6;
+    }
+
+    .tick.hour-tick::before {
+      top: 5px;
+      width: 2.5px;
+      height: 9px;
+      background: linear-gradient(180deg, #fff2c4 0%, #d8ad56 50%, #90661c 100%);
+      border-radius: 1px;
+      opacity: 1;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    }
+
+    .tick.cardinal::before {
+      height: 11px;
+      width: 3px;
+      background: linear-gradient(180deg, #ffffff 0%, #edd18c 35%, #a47b2c 100%);
+    }
+
+    /* Numerals Layer (1-12) */
+    .numerals-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .numeral {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 22px;
+      height: 22px;
+      margin-top: -11px;
+      margin-left: -11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cinzel', serif;
+      font-size: clamp(10.5px, 2.7vw, 12.5px);
+      font-weight: 700;
+      color: #ebd193;
+      background: linear-gradient(180deg, #fff2c9 0%, #deb15c 55%, #8f6720 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.9));
+    }
+
+    /* Brand Section: Positioned safely at lower quadrant, on top of hands */
+    .brand-section {
+      position: absolute;
+      top: 68%;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      width: 85%;
+      z-index: 20;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .brand-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(9px, 2.3vw, 11px);
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      background: linear-gradient(180deg, #fff3cb 0%, #dfb45b 55%, #8f6720 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 8px rgba(0, 0, 0, 0.8));
+      white-space: nowrap;
+    }
+
+    .brand-date {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(7.5px, 1.9vw, 9px);
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: #dfb45b;
+      opacity: 0.95;
+      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.95));
+      white-space: nowrap;
+    }
+
+    /* Clock Hands Master Container */
+    .hand-container {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    /* Mechanical Step Pivot (Spring recoil escapement snap) */
+    .hand-pivot {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      will-change: transform;
+    }
+
+    .hand-pivot.snap-step {
+      transition: transform 0.1s cubic-bezier(0.18, 0.9, 0.32, 1.35);
+    }
+
+    /* Long Prominent Hands */
+
+    /* Hour Hand */
+    .hand-hour {
+      position: absolute;
+      bottom: 0;
+      left: -3px;
+      width: 6px;
+      height: 48px;
+      border-radius: 2px 2px 1px 1px;
+      background: linear-gradient(
+        90deg,
+        #f5dda0 0%,
+        #e0b55d 48%,
+        #a67d2b 52%,
+        #654a13 100%
+      );
+      filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.7));
+    }
+
+    .hand-hour::after {
+      content: '';
+      position: absolute;
+      top: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 3px solid transparent;
+      border-right: 3px solid transparent;
+      border-bottom: 5px solid #f5dda0;
+    }
+
+    /* Minute Hand */
+    .hand-minute {
+      position: absolute;
+      bottom: 0;
+      left: -2px;
+      width: 4px;
+      height: 98px;
+      border-radius: 2px 2px 1px 1px;
+      background: linear-gradient(
+        90deg,
+        #fbe6af 0%,
+        #dfb45b 48%,
+        #a67d2a 52%,
+        #694c14 100%
+      );
+      filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.75));
+    }
+
+    .hand-minute::after {
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 2px solid transparent;
+      border-right: 2px solid transparent;
+      border-bottom: 6px solid #fbe6af;
+    }
+
+    /* Precision Mechanical Red Second Hand */
+    .hand-second {
+      position: absolute;
+      left: -1px;
+      width: 2px;
+      bottom: -18px;
+      height: 120px;
+      background: linear-gradient(
+        180deg,
+        var(--red-hand) 0%,
+        var(--red-hand) 85%,
+        #b51a10 100%
+      );
+      border-radius: 1px;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.75));
+    }
+
+    .hand-second::before {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      border: 1px solid var(--red-hand);
+      background: rgba(18, 23, 30, 0.8);
+    }
+
+    /* Hand Z-Index Hierarchy */
+    #hourPivot { z-index: 6; }
+    #minutePivot { z-index: 7; }
+    #secondPivot { z-index: 9; }
+
+    /* Center Pinion Jewel Boss */
+    .center-cap {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: conic-gradient(
+        from 0deg,
+        #fce9b1,
+        #c89f46,
+        #7a5518,
+        #e3be6d,
+        #fff1c5,
+        #b28631,
+        #7a5518,
+        #fce9b1
+      );
+      box-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 2px rgba(255, 230, 150, 0.5);
+      z-index: 10;
+    }
+
+    .center-cap-inner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 3.5px;
+      height: 3.5px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #ff5247 0%, #ba1c13 75%, #5e0803 100%);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+      z-index: 11;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="showcase">
+    <!-- Watch Case / Outer Bezel (Only element visible on screen) -->
+    <div class="watch-case" id="watchCase" aria-label="Noim Enterprise Luxury Analog Clock">
+      <div class="inner-bezel">
+        <div class="dial">
+          <!-- 60 Minute & Hour Graduation Ticks -->
+          <div class="ticks-layer" id="ticksContainer"></div>
+
+          <!-- 1 to 12 Numerals at each 5-minute position -->
+          <div class="numerals-layer" id="numeralsContainer"></div>
+
+          <!-- 3 Hands Configured with Pure Mechanical Stepping (Layered Below Brand) -->
+          <div class="hand-container">
+            <div class="hand-pivot snap-step" id="hourPivot">
+              <div class="hand-hour"></div>
+            </div>
+            <div class="hand-pivot snap-step" id="minutePivot">
+              <div class="hand-minute"></div>
+            </div>
+            <div class="hand-pivot snap-step" id="secondPivot">
+              <div class="hand-second"></div>
+            </div>
+
+            <!-- Center Jewel & Pinion -->
+            <div class="center-cap"></div>
+            <div class="center-cap-inner"></div>
+          </div>
+
+          <!-- Branding Section (Placed on top of all 3 hands) -->
+          <div class="brand-section">
+            <h1 class="brand-title">NOIM ENTERPRISE</h1>
+            <div class="brand-date" id="liveDate">--:-- -- | Day: --- | --- --</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      // 1. Dial Graduation Ticks (60 ticks)
+      const ticksContainer = document.getElementById('ticksContainer');
+      const ticksFragment = document.createDocumentFragment();
+
+      for (let i = 0; i < 60; i++) {
+        const tick = document.createElement('div');
+        tick.className = 'tick';
+        
+        if (i % 5 === 0) {
+          tick.classList.add('hour-tick');
+          if (i % 15 === 0) {
+            tick.classList.add('cardinal');
+          }
+        }
+
+        tick.style.transform = `rotate(${i * 6}deg)`;
+        ticksFragment.appendChild(tick);
+      }
+      ticksContainer.appendChild(ticksFragment);
+
+      // 2. Generate 1 through 12 Numerals
+      const numeralsContainer = document.getElementById('numeralsContainer');
+      const dial = document.querySelector('.dial');
+
+      function layoutNumerals() {
+        numeralsContainer.innerHTML = '';
+        const dialRadius = dial.clientWidth / 2;
+        const numberRadius = dialRadius * 0.81;
+        const numeralsFragment = document.createDocumentFragment();
+
+        for (let i = 1; i <= 12; i++) {
+          const num = document.createElement('div');
+          num.className = 'numeral';
+          num.textContent = i;
+          
+          const angle = i * 30; // 30° per hour
+          num.style.transform = `rotate(${angle}deg) translateY(-${numberRadius}px) rotate(-${angle}deg)`;
+          numeralsFragment.appendChild(num);
+        }
+        numeralsContainer.appendChild(numeralsFragment);
+      }
+
+      layoutNumerals();
+      window.addEventListener('resize', layoutNumerals);
+
+      // 3. Web Audio API Procedural Synthesizer (Realistic Mechanical Escapement)
+      let audioCtx = null;
+      let soundEnabled = true;
+
+      function getAudioContext() {
+        if (!audioCtx) {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          if (AudioContextClass) {
+            audioCtx = new AudioContextClass();
+          }
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        return audioCtx;
+      }
+
+      // Procedural noise buffer for mechanical click impact
+      function createEscapementClick(ctx, startTime, freq, decay, gainLevel) {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, startTime);
+        osc.frequency.exponentialRampToValueAtTime(80, startTime + decay);
+
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(freq, startTime);
+        filter.Q.setValueAtTime(8.0, startTime);
+
+        gain.gain.setValueAtTime(gainLevel, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, startTime + decay);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(startTime);
+        osc.stop(startTime + decay);
+      }
+
+      // Realistic Mechanical Clock Tick-Tock (Dual pallet escapement impulse)
+      function playMechanicalTick(isTock) {
+        if (!soundEnabled) return;
+        const ctx = getAudioContext();
+        if (!ctx || ctx.state !== 'running') return;
+
+        const now = ctx.currentTime;
+
+        // 1. Initial pallet jewel click (sharp high strike)
+        const primaryFreq = isTock ? 3100 : 3600;
+        createEscapementClick(ctx, now, primaryFreq, 0.008, 0.28);
+
+        // 2. Escapement wheel tooth drop (micro bounce 4ms later)
+        const bounceFreq = isTock ? 1900 : 2200;
+        createEscapementClick(ctx, now + 0.004, bounceFreq, 0.012, 0.16);
+
+        // 3. Resonant clockwork brass housing resonance
+        const bodyOsc = ctx.createOscillator();
+        const bodyGain = ctx.createGain();
+        bodyOsc.type = 'sine';
+        bodyOsc.frequency.setValueAtTime(isTock ? 780 : 920, now);
+        bodyOsc.frequency.exponentialRampToValueAtTime(120, now + 0.028);
+
+        bodyGain.gain.setValueAtTime(0.08, now);
+        bodyGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.028);
+
+        bodyOsc.connect(bodyGain);
+        bodyGain.connect(ctx.destination);
+
+        bodyOsc.start(now);
+        bodyOsc.stop(now + 0.03);
+      }
+
+      // Deep Resonant Clock Gong / Hourly Chime
+      function playCathedralHourlyChime() {
+        if (!soundEnabled) return;
+        const ctx = getAudioContext();
+        if (!ctx || ctx.state !== 'running') return;
+
+        const now = ctx.currentTime;
+        const gongNotes = [220.0, 330.0, 440.0, 554.37];
+
+        gongNotes.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.1);
+
+          const startTime = now + idx * 0.1;
+          const duration = 2.8 - idx * 0.25;
+
+          gain.gain.setValueAtTime(0.0001, startTime);
+          gain.gain.linearRampToValueAtTime(0.3, startTime + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc.start(startTime);
+          osc.stop(startTime + duration + 0.1);
+        });
+      }
+
+      // Initialize audio on load and silently resume on any passive user gesture
+      function startClockAudio() {
+        const ctx = getAudioContext();
+        if (ctx && ctx.state === 'suspended') {
+          ctx.resume();
+        }
+      }
+
+      // Immediate attempt on script load
+      startClockAudio();
+
+      // Passive listeners ensure sound starts automatically without needing a dedicated button
+      const passiveEvents = ['pointerdown', 'touchstart', 'mousedown', 'keydown', 'wheel', 'scroll'];
+      function passiveAudioUnlock() {
+        startClockAudio();
+        passiveEvents.forEach(evt => window.removeEventListener(evt, passiveAudioUnlock));
+      }
+      passiveEvents.forEach(evt => window.addEventListener(evt, passiveAudioUnlock, { passive: true }));
+
+      // 4. Live Date & Mechanical Stepping Time Engine
+      const hourPivot = document.getElementById('hourPivot');
+      const minutePivot = document.getElementById('minutePivot');
+      const secondPivot = document.getElementById('secondPivot');
+      const liveDate = document.getElementById('liveDate');
+
+      function updateCalendar(now) {
+        const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        
+        const rawHours = now.getHours();
+        const amPm = rawHours >= 12 ? 'pm' : 'am';
+        const hours12 = rawHours % 12 || 12;
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const dayName = dayNames[now.getDay()];
+        const dateNum = now.getDate();
+        const monthName = monthNames[now.getMonth()];
+
+        liveDate.textContent = `${hours12}:${minutes}${amPm} | Day: ${dayName} | ${monthName} ${dateNum}`;
+      }
+
+      let lastSecond = -1;
+
+      // Pure Mechanical Stepping Loop (Checks every frame, steps on second transition)
+      function mechanicalClockTick() {
+        const now = new Date();
+        const currentSecond = now.getSeconds();
+
+        if (currentSecond !== lastSecond) {
+          const currentMinute = now.getMinutes();
+          const currentHour = now.getHours();
+
+          // Update live time & date sub-dial text
+          updateCalendar(now);
+
+          // Mechanical Stepping Angles:
+          // Second hand advances 6° per step
+          const secondDegrees = currentSecond * 6;
+          // Minute hand steps forward each second
+          const minuteDegrees = (currentMinute + currentSecond / 60) * 6;
+          // Hour hand steps forward each second
+          const hourDegrees = ((currentHour % 12) + currentMinute / 60 + currentSecond / 3600) * 30;
+
+          secondPivot.style.transform = `rotate(${secondDegrees}deg)`;
+          minutePivot.style.transform = `rotate(${minuteDegrees}deg)`;
+          hourPivot.style.transform = `rotate(${hourDegrees}deg)`;
+
+          // Play Sound: Check if an hour just completed (00:00)
+          if (currentMinute === 0 && currentSecond === 0) {
+            playCathedralHourlyChime();
+          } else {
+            // Alternating tick / tock sound on every second
+            playMechanicalTick(currentSecond % 2 === 0);
+          }
+
+          lastSecond = currentSecond;
+        }
+
+        requestAnimationFrame(mechanicalClockTick);
+      }
+
+      requestAnimationFrame(mechanicalClockTick);
+
+      // Subtle 3D Perspective Tilt on Mouse Movement
+      const watchCase = document.getElementById('watchCase');
+      window.addEventListener('mousemove', (e) => {
+        const rect = watchCase.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const deltaX = (e.clientX - centerX) / (window.innerWidth / 2);
+        const deltaY = (e.clientY - centerY) / (window.innerHeight / 2);
+
+        const tiltX = -deltaY * 4.2;
+        const tiltY = deltaX * 4.2;
+        watchCase.style.transform = `perspective(850px) rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg)`;
+      });
+
+      window.addEventListener('mouseleave', () => {
+        watchCase.style.transform = 'perspective(850px) rotateX(0deg) rotateY(0deg)';
+      });
+    })();
+  </script>
+</body>
+</html>
